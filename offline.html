@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Offline — In Loving Memory</title>
+    <style>
+        :root { --ivory: #f8f5ef; --gold: #c4a96b; --dark: #1a2a1a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--ivory);
+            font-family: 'Georgia', serif;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; text-align: center; padding: 2rem;
+        }
+        .container { max-width: 480px; }
+        .candle { font-size: 4rem; animation: flicker 2s ease-in-out infinite alternate; }
+        @keyframes flicker {
+            0%   { opacity: 1;   transform: scaleY(1); }
+            100% { opacity: 0.7; transform: scaleY(0.97) rotate(1deg); }
+        }
+        h1 { color: var(--dark); margin: 1.5rem 0 0.5rem; font-size: 1.8rem; font-weight: 400; }
+        p  { color: #666; line-height: 1.8; margin-bottom: 1.5rem; }
+        .quote { border-left: 3px solid var(--gold); padding: 0.75rem 1rem; margin: 1.5rem 0; font-style: italic; color: #555; }
+        button {
+            background: var(--dark); color: #fff;
+            border: none; border-radius: 50px;
+            padding: 0.65rem 2rem; font-size: 0.95rem;
+            cursor: pointer; transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="candle">🕯️</div>
+    <h1>You're Offline</h1>
+    <p>Your connection seems to be unavailable right now.<br>But the flame of memory never goes out.</p>
+    <div class="quote">
+        "Those we love don't go away, they walk beside us every day."
+    </div>
+    <p style="font-size:0.9rem;">Some pages may be available from your cache. Try going back or reconnect to visit the memorial.</p>
+    <button onclick="window.location.reload()">Try Again</button>
+</div>
+</body>
+</html>

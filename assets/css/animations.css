@@ -1,0 +1,255 @@
+/* ============================================================
+   IN LOVING MEMORY — Animations & Keyframes
+   ============================================================ */
+
+/* ─── KEYFRAMES ──────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Candle Flicker */
+@keyframes flicker {
+  0%   { transform: scaleX(1) scaleY(1) rotate(-1deg);  opacity: 0.95; }
+  25%  { transform: scaleX(0.95) scaleY(1.05) rotate(1deg);  opacity: 1; }
+  50%  { transform: scaleX(1.05) scaleY(0.95) rotate(-2deg); opacity: 0.9; }
+  75%  { transform: scaleX(0.98) scaleY(1.03) rotate(1deg);  opacity: 1; }
+  100% { transform: scaleX(1.02) scaleY(1) rotate(-1deg);    opacity: 0.95; }
+}
+
+/* Glow Pulse */
+@keyframes glowPulse {
+  from { opacity: 0.3; transform: scale(0.9); }
+  to   { opacity: 0.7; transform: scale(1.1); }
+}
+
+/* Pulse Ring */
+@keyframes pulseRing {
+  0%   { transform: scale(1); opacity: 0.5; }
+  50%  { transform: scale(1.04); opacity: 0.2; }
+  100% { transform: scale(1); opacity: 0.5; }
+}
+
+/* Scroll Indicator */
+@keyframes scrollPulse {
+  0%, 100% { transform: scaleY(1); opacity: 0.5; }
+  50%       { transform: scaleY(1.3); opacity: 1; }
+}
+
+/* Flower Appear */
+@keyframes flowerAppear {
+  from { opacity: 0; transform: scale(0.5) rotate(-20deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* Petal Fall */
+@keyframes petalFall {
+  0%   { transform: translateY(-20px) translateX(0) rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(110vh) translateX(var(--drift)) rotate(var(--spin)); opacity: 0; }
+}
+
+/* Sway */
+@keyframes sway {
+  0%   { margin-left: 0; }
+  25%  { margin-left: 10px; }
+  75%  { margin-left: -10px; }
+  100% { margin-left: 0; }
+}
+
+/* Float up (for prayers/flowers confirmation) */
+@keyframes floatUp {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-60px) scale(1.3); }
+}
+
+/* Shimmer */
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+/* Count Up */
+@keyframes countBounce {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); color: var(--soft-gold); }
+  100% { transform: scale(1); }
+}
+
+/* Spin */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Bell ring */
+@keyframes bellRing {
+  0%   { transform: rotate(0deg); }
+  10%  { transform: rotate(15deg); }
+  20%  { transform: rotate(-12deg); }
+  30%  { transform: rotate(10deg); }
+  40%  { transform: rotate(-8deg); }
+  50%  { transform: rotate(6deg); }
+  60%  { transform: rotate(-4deg); }
+  70%  { transform: rotate(2deg); }
+  80%  { transform: rotate(-1deg); }
+  90%  { transform: rotate(0.5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* ─── SCROLL REVEAL ──────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+
+.reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+
+.reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Stagger delays */
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+.reveal-delay-6 { transition-delay: 0.6s; }
+
+/* ─── PETAL STYLES ───────────────────────────────────────── */
+.petal {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform, opacity;
+  font-size: var(--size, 1.2rem);
+  animation: petalFall var(--duration) var(--ease) var(--delay) forwards;
+  top: -30px;
+  left: var(--left);
+  --drift: var(--petal-drift, 50px);
+  --spin: var(--petal-spin, 360deg);
+}
+
+/* ─── LOADING STATES ─────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--ivory-deeper) 25%, var(--ivory-dark) 50%, var(--ivory-deeper) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+/* ─── BUTTON EFFECTS ─────────────────────────────────────── */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  transition: transform 0.4s, opacity 0.4s;
+}
+
+.btn-ripple:active::after {
+  opacity: 1;
+  transform: scale(2);
+  transition: none;
+}
+
+/* ─── HOVER LIFT ─────────────────────────────────────────── */
+.hover-lift {
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ─── CANDLE LIGHT EFFECT ────────────────────────────────── */
+.candle-light-ambient {
+  position: fixed;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,146,74,0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: glowPulse 3s ease-in-out infinite alternate;
+}
+
+/* ─── SUCCESS BURST ──────────────────────────────────────── */
+.success-burst {
+  position: fixed;
+  z-index: 9999;
+  font-size: 2rem;
+  pointer-events: none;
+  animation: floatUp 1.5s ease forwards;
+}
+
+/* ─── TOOLTIP ANIMATED ───────────────────────────────────── */
+.tip-animate {
+  animation: fadeInUp 0.3s var(--ease-out);
+}
+
+/* ─── PAGE TRANSITION ────────────────────────────────────── */
+.page-fade-in {
+  animation: fadeIn 0.5s ease;
+}
+
+/* ─── MEMORIAL GLOW TEXT ─────────────────────────────────── */
+.glow-text {
+  text-shadow: 0 0 20px rgba(201,168,76,0.4), 0 0 40px rgba(201,168,76,0.2);
+}
+
+/* ─── INFINITE FLOAT ─────────────────────────────────────── */
+.float-gentle {
+  animation: sway 6s ease-in-out infinite;
+}
