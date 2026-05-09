@@ -134,27 +134,40 @@ function verifyPassword(string $password, string $hash): bool {
 }
 
 // ─── Upload Helpers ────────────────────────────────────────
-function handleUpload(array $file, string $subdir, array $allowed = ['jpg','jpeg','png','gif','webp']): ?string {
-    if ($file['error'] !== UPLOAD_ERR_OK) return null;
+function handleUpload(array $file, string $subdir, array $allowed = ['jpg','jpeg','png','gif','webp'], int $maxMB = 5): array {
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        return ['success' => false, 'message' => 'Upload error.', 'path' => null];
+    }
+    
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    if (!in_array($ext, $allowed, true)) return null;
-    if ($file['size'] > 5 * 1024 * 1024) return null; // 5MB max
+    if (!in_array($ext, $allowed, true)) {
+        return ['success' => false, 'message' => 'File type not allowed.', 'path' => null];
+    }
+    
+    $maxBytes = $maxMB * 1024 * 1024;
+    if ($file['size'] > $maxBytes) {
+        return ['success' => false, 'message' => "File must be under {$maxMB}MB.", 'path' => null];
+    }
 
     // Validate MIME type
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
     $mime  = finfo_file($finfo, $file['tmp_name']);
     finfo_close($finfo);
-    $validMimes = ['image/jpeg','image/png','image/gif','image/webp'];
-    if (!in_array($mime, $validMimes, true)) return null;
+    $validMimes = ['image/jpeg','image/png','image/gif','image/webp','video/mp4','video/webm','video/ogg'];
+    if (!in_array($mime, $validMimes, true)) {
+        return ['success' => false, 'message' => 'Invalid file type.', 'path' => null];
+    }
 
     $dir = UPLOAD_DIR . $subdir . '/';
     if (!is_dir($dir)) mkdir($dir, 0755, true);
 
     $newName = uniqid('', true) . '.' . $ext;
     $dest    = $dir . $newName;
-    if (!move_uploaded_file($file['tmp_name'], $dest)) return null;
+    if (!move_uploaded_file($file['tmp_name'], $dest)) {
+        return ['success' => false, 'message' => 'Failed to move upload file.', 'path' => null];
+    }
 
-    return $subdir . '/' . $newName;
+    return ['success' => true, 'path' => $subdir . '/' . $newName];
 }
 
 // ─── Validation ────────────────────────────────────────────
