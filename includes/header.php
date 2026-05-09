@@ -9,6 +9,8 @@ $deceasedName = getSetting('deceased_name', 'Hercio Maria da Neves Campos');
 $siteTitle     = getSetting('site_title', 'In Loving Memory');
 $fullTitle     = ($pageTitle ?? $siteTitle) . ' — ' . $siteTitle;
 $user          = isLoggedIn() ? currentUser() : null;
+// Prefer new canonical key; fall back to legacy music_file key
+$musicUrl = getSetting('music_file', getSetting('ambient_music_url', ''));
 
 ?>
 <!DOCTYPE html>
@@ -47,7 +49,9 @@ $user          = isLoggedIn() ? currentUser() : null;
 
     <!-- Ambient Music (hidden) -->
     <audio id="ambientAudio" loop preload="none">
-        <source src="<?= SITE_URL ?>/assets/sounds/ambient.mp3" type="audio/mpeg">
+        <?php if ($musicUrl): ?>
+        <source src="<?= e($musicUrl) ?>" type="audio/mpeg">
+        <?php endif; ?>
     </audio>
 
     <!-- Petal Container -->
