@@ -95,6 +95,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         font-size: 1.8rem;
         margin: 0 auto 1.5rem;
     }
+
+    .admin-login-card .btn-memorial {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        background: var(--soft-gold, #c9a84c);
+        color: #ffffff;
+        border: 1px solid rgba(201, 168, 76, 0.7);
+    }
+
+    .admin-login-card .btn-memorial:hover {
+        background: var(--candle, #e8924a);
+        color: #ffffff;
+    }
     </style>
 </head>
 
@@ -122,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" name="password" class="form-control memorial-input" placeholder="••••••••"
                         required>
                 </div>
-                <button type="submit" class="btn btn-memorial w-100">Sign In</button>
+                <button type="submit" class="btn-memorial btn-primary-memorial w-100">Sign In</button>
             </form>
 
             <div class="text-center mt-4">
