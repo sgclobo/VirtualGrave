@@ -29,12 +29,16 @@ function csrfField(): string {
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrfToken()) . '">';
 }
 
-function verifyCsrf(): void {
-    $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-    if (!hash_equals(csrfToken(), $token)) {
-        http_response_code(403);
-        die(jsonError('Invalid security token. Please refresh and try again.'));
+function verifyCsrf(?string $token = null): bool {
+    if ($token === null) {
+        $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
     }
+
+    if ($token === '') {
+        return false;
+    }
+
+    return hash_equals(csrfToken(), $token);
 }
 
 // ─── Output Helpers ────────────────────────────────────────

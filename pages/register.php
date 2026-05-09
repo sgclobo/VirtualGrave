@@ -10,7 +10,9 @@ $errors = [];
 $values = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifyCsrf();
+  if (!verifyCsrf()) {
+    $errors[] = 'Invalid security token. Please refresh and try again.';
+  }
 
     $values = [
         'full_name'   => trim($_POST['full_name'] ?? ''),

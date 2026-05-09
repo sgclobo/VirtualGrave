@@ -8,13 +8,16 @@ if (isLoggedIn()) { header('Location: ' . SITE_URL . '/'); exit; }
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifyCsrf();
-    $ident    = trim($_POST['ident'] ?? '');
-    $password = $_POST['password'] ?? '';
+  if (!verifyCsrf()) {
+    $error = 'Invalid security token. Please refresh and try again.';
+  }
 
-    if (!$ident || !$password) {
+  $ident    = trim($_POST['ident'] ?? '');
+  $password = $_POST['password'] ?? '';
+
+  if (!$error && (!$ident || !$password)) {
         $error = 'Please enter your email/username and password.';
-    } else {
+  } elseif (!$error) {
         $pdo  = getDB();
         $stmt = $pdo->prepare('SELECT * FROM users WHERE (email=? OR username=?) LIMIT 1');
         $stmt->execute([$ident, $ident]);
