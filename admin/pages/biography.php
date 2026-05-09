@@ -24,11 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sortOrder = (int)($_POST['sort_order'] ?? 0);
 
             if ($id > 0) {
-                $db->prepare("UPDATE biography SET title=?, content=?, icon=?, sort_order=? WHERE id=?")
+                $db->prepare("UPDATE biography SET section_title=?, section_content=?, icon=?, section_order=? WHERE id=?")
                    ->execute([$title, $content, $icon, $sortOrder, $id]);
                 $msg = 'Section updated.';
             } else {
-                $db->prepare("INSERT INTO biography (title, content, icon, sort_order) VALUES (?,?,?,?)")
+                $db->prepare("INSERT INTO biography (section_title, section_content, icon, section_order) VALUES (?,?,?,?)")
                    ->execute([$title, $content, $icon, $sortOrder]);
                 $msg = 'Section added.';
             }
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$sections = $db->query("SELECT * FROM biography ORDER BY sort_order ASC, id ASC")->fetchAll();
+$sections = $db->query("SELECT * FROM biography ORDER BY section_order ASC, id ASC")->fetchAll();
 $editSection = null;
 if (isset($_GET['edit'])) {
     $stmt = $db->prepare("SELECT * FROM biography WHERE id = ?");
@@ -75,18 +75,18 @@ include '../includes/header.php';
                 <div class="mb-3">
                     <label class="form-label small">Section Title <span class="text-danger">*</span></label>
                     <input type="text" name="title" class="form-control form-control-sm" required maxlength="100"
-                           value="<?= htmlspecialchars($editSection['title'] ?? '') ?>">
+                           value="<?= htmlspecialchars($editSection['section_title'] ?? '') ?>">
                 </div>
                 <div class="mb-3">
                     <label class="form-label small">Content <span class="text-danger">*</span></label>
                     <textarea name="content" class="form-control form-control-sm" rows="8" required
-                              placeholder="Write the biography section content here…"><?= htmlspecialchars($editSection['content'] ?? '') ?></textarea>
+                              placeholder="Write the biography section content here…"><?= htmlspecialchars($editSection['section_content'] ?? '') ?></textarea>
                     <div class="form-text">Basic HTML allowed (p, strong, em, br, ul, li).</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label small">Sort Order</label>
                     <input type="number" name="sort_order" class="form-control form-control-sm"
-                           value="<?= $editSection['sort_order'] ?? count($sections) + 1 ?>">
+                           value="<?= $editSection['section_order'] ?? count($sections) + 1 ?>">
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-memorial flex-grow-1">
@@ -112,9 +112,9 @@ include '../includes/header.php';
                 <li class="list-group-item d-flex align-items-start gap-3 py-3">
                     <span style="font-size:1.4rem;"><?= htmlspecialchars($s['icon']) ?></span>
                     <div class="flex-grow-1 min-w-0">
-                        <div class="fw-semibold small"><?= htmlspecialchars($s['title']) ?></div>
+                        <div class="fw-semibold small"><?= htmlspecialchars($s['section_title']) ?></div>
                         <div class="text-muted" style="font-size:0.72rem;">
-                            <?= htmlspecialchars(mb_substr(strip_tags($s['content']),0,80)) ?>…
+                            <?= htmlspecialchars(mb_substr(strip_tags($s['section_content']),0,80)) ?>…
                         </div>
                     </div>
                     <div class="d-flex gap-1 flex-shrink-0">
