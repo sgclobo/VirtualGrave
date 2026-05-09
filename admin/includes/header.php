@@ -12,15 +12,15 @@ requireAdmin();
 $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 
 $navItems = [
-    ['page' => 'index',     'icon' => '📊', 'label' => 'Dashboard',        'path' => '../index.php'],
-    ['page' => 'members',   'icon' => '👥', 'label' => 'Members',           'path' => 'pages/members.php'],
-    ['page' => 'moderate',  'icon' => '🛡️',  'label' => 'Moderate Content', 'path' => 'pages/moderate.php'],
-    ['page' => 'gallery',   'icon' => '🖼️',  'label' => 'Gallery',          'path' => 'pages/gallery.php'],
-    ['page' => 'flowers',   'icon' => '🌹', 'label' => 'Flowers Catalog',   'path' => 'pages/flowers.php'],
-    ['page' => 'candles',   'icon' => '🕯️', 'label' => 'Candles Catalog',   'path' => 'pages/candles.php'],
-    ['page' => 'biography', 'icon' => '📖', 'label' => 'Biography',         'path' => 'pages/biography.php'],
-    ['page' => 'timeline',  'icon' => '📅', 'label' => 'Timeline',          'path' => 'pages/timeline.php'],
-    ['page' => 'settings',  'icon' => '⚙️', 'label' => 'Settings',          'path' => 'pages/settings.php'],
+    ['page' => 'index',     'icon' => '📊', 'label' => 'Dashboard',        'path' => SITE_URL . '/admin/index.php'],
+    ['page' => 'members',   'icon' => '👥', 'label' => 'Members',           'path' => SITE_URL . '/admin/pages/members.php'],
+    ['page' => 'moderate',  'icon' => '🛡️',  'label' => 'Moderate Content', 'path' => SITE_URL . '/admin/pages/moderate.php'],
+    ['page' => 'gallery',   'icon' => '🖼️',  'label' => 'Gallery',          'path' => SITE_URL . '/admin/pages/gallery.php'],
+    ['page' => 'flowers',   'icon' => '🌹', 'label' => 'Flowers Catalog',   'path' => SITE_URL . '/admin/pages/flowers.php'],
+    ['page' => 'candles',   'icon' => '🕯️', 'label' => 'Candles Catalog',   'path' => SITE_URL . '/admin/pages/candles.php'],
+    ['page' => 'biography', 'icon' => '📖', 'label' => 'Biography',         'path' => SITE_URL . '/admin/pages/biography.php'],
+    ['page' => 'timeline',  'icon' => '📅', 'label' => 'Timeline',          'path' => SITE_URL . '/admin/pages/timeline.php'],
+    ['page' => 'settings',  'icon' => '⚙️', 'label' => 'Settings',          'path' => SITE_URL . '/admin/pages/settings.php'],
 ];
 
 $adminName = $_SESSION['admin_name'] ?? 'Admin';
@@ -304,8 +304,8 @@ $adminInitial = strtoupper($adminInitial ?: 'A');
 
         <div class="admin-sidebar-footer">
             <div class="text-white-50 small mb-2"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></div>
-            <a href="../../pages/memorial.php" target="_blank">🌐 View Memorial</a>
-            <a href="../../logout.php">🚪 Sign Out</a>
+            <a href="<?= SITE_URL ?>/pages/memorial.php" target="_blank">🌐 View Memorial</a>
+            <a href="<?= SITE_URL ?>/admin/logout.php">🚪 Sign Out</a>
         </div>
     </aside>
 
