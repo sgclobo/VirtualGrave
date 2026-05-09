@@ -30,11 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else {
             // Upload
-            $caption  = trim($_POST['caption'] ?? '');
-            $category = trim($_POST['category'] ?? 'Special Moments');
-            $mediaType = 'photo';
-            $validCats = ['Childhood','Family','Work','Celebrations','Travels','Special Moments'];
-            if (!in_array($category, $validCats)) $category = 'Special Moments';
+            $title    = trim($_POST['caption'] ?? '');  // Map form field to title column
+            $category = strtolower(trim($_POST['category'] ?? 'special'));
+            $fileType = 'photo';
+            $validCats = ['childhood','family','work','celebrations','travels','special'];
+            if (!in_array($category, $validCats)) $category = 'special';
 
             if (empty($_FILES['media_file']['name'])) {
                 $msg = 'Please select a file.'; $msgType = 'danger';
@@ -47,13 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($uploadResult['success']) {
                     $mime = mime_content_type(UPLOAD_DIR . 'gallery/' . $uploadResult['path']);
-                    $mediaType = in_array($mime, $allowedVideos) ? 'video' : 'photo';
+                    $fileType = in_array($mime, $allowedVideos) ? 'video' : 'photo';
 
                     $stmt = $db->prepare("
-                        INSERT INTO gallery (file_path, caption, category, media_type, uploaded_by, created_at)
-                        VALUES (?, ?, ?, ?, ?, NOW())
+                        INSERT INTO gallery (file_path, title, category, file_type)
+                        VALUES (?, ?, ?, ?)
                     ");
-                    $stmt->execute([$uploadResult['path'], $caption, $category, $mediaType, $_SESSION['admin_id']]);
+                    $stmt->execute([$uploadResult['path'], $title, $category, $fileType]);
                     $msg = 'Media uploaded successfully.';
                 } else {
                     $msg = 'Upload failed: ' . $uploadResult['message']; $msgType = 'danger';
@@ -64,15 +64,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch gallery
-$filter = $_GET['category'] ?? '';
-$validCats = ['Childhood','Family','Work','Celebrations','Travels','Special Moments'];
+$filter = strtolower($_GET['category'] ?? '');
+$validCats = ['childhood','family','work','celebrations','travels','special'];
 if (!in_array($filter, $validCats)) $filter = '';
 
 $where  = '1=1';
 $params = [];
 if ($filter) { $where .= ' AND category = ?'; $params[] = $filter; }
 
-$stmt = $db->prepare("SELECT * FROM gallery WHERE $where ORDER BY created_at DESC");
+$stmt = $db->prepare("SELECT * FROM gallery WHERE $where ORDER BY uploaded_at DESC");
 $stmt->execute($params);
 $items = $stmt->fetchAll();
 
@@ -138,7 +138,7 @@ include '../includes/header.php';
             <?php foreach ($items as $item): ?>
             <div class="col-6 col-sm-4">
                 <div class="position-relative overflow-hidden rounded" style="aspect-ratio:1;">
-                    <?php if ($item['media_type'] === 'video'): ?>
+                    <?php if ($item['file_type'] === 'video'): ?>
                     <video src="../../uploads/gallery/<?= htmlspecialchars($item['file_path']) ?>"
                            class="w-100 h-100" style="object-fit:cover;"></video>
                     <div class="position-absolute top-50 start-50 translate-middle" style="font-size:2rem;opacity:0.8;">▶️</div>
@@ -150,8 +150,12 @@ include '../includes/header.php';
                     <!-- Overlay -->
                     <div class="position-absolute bottom-0 start-0 end-0 p-2"
                          style="background:linear-gradient(transparent,rgba(0,0,0,0.7));">
-                        <div class="text-white small"><?= htmlspecialchars(mb_substr($item['caption']??'',0,30)) ?></div>
-                        <div class="text-white-50" style="font-size:0.65rem;"><?= $item['category'] ?></div>
+                        <?php
+                            $title = $item['title'] ?? $item['description'] ?? '';
+                            $shortTitle = function_exists('mb_substr') ? mb_substr($title, 0, 30) : substr($title, 0, 30);
+                        ?>
+                        <div class="text-white small"><?= htmlspecialchars($shortTitle) ?></div>
+                        <div class="text-white-50" style="font-size:0.65rem;"><?= htmlspecialchars(ucfirst($item['category'])) ?></div>
                     </div>
 
                     <!-- Delete -->

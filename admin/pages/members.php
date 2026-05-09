@@ -63,7 +63,7 @@ $totalPages = ceil($total / $perPage);
 
 $params[] = $perPage;
 $params[] = $offset;
-$stmt = $db->prepare("SELECT * FROM users WHERE $where ORDER BY created_at DESC LIMIT ? OFFSET ?");
+$stmt = $db->prepare("SELECT * FROM users WHERE $where ORDER BY registered_at DESC LIMIT ? OFFSET ?");
 $stmt->execute($params);
 $members = $stmt->fetchAll();
 
@@ -119,13 +119,14 @@ include '../includes/header.php';
             <tr>
                 <td>
                     <div class="d-flex align-items-center gap-2">
-                        <?php if ($member['avatar']): ?>
-                        <img src="../../uploads/avatars/<?= htmlspecialchars($member['avatar']) ?>"
+                        <?php if ($member['profile_photo']): ?>
+                        <img src="../../uploads/avatars/<?= htmlspecialchars($member['profile_photo']) ?>"
                              class="rounded-circle" width="32" height="32" style="object-fit:cover;" alt="">
                         <?php else: ?>
+                        <?php $initial = function_exists('mb_substr') ? strtoupper(mb_substr($member['full_name'], 0, 1)) : strtoupper(substr($member['full_name'], 0, 1)); ?>
                         <div class="rounded-circle d-flex align-items-center justify-content-center"
                              style="width:32px;height:32px;background:var(--soft-gold);font-weight:700;font-size:0.8rem;color:var(--deep-blue);">
-                            <?= strtoupper(mb_substr($member['full_name'], 0, 1)) ?>
+                            <?= $initial ?>
                         </div>
                         <?php endif; ?>
                         <div>
@@ -142,7 +143,7 @@ include '../includes/header.php';
                         <?= ucfirst($member['status']) ?>
                     </span>
                 </td>
-                <td class="small text-muted"><?= date('M j, Y', strtotime($member['created_at'])) ?></td>
+                <td class="small text-muted"><?= date('M j, Y', strtotime($member['registered_at'])) ?></td>
                 <td>
                     <div class="d-flex gap-1">
                         <?php if ($member['status'] !== 'approved'): ?>
