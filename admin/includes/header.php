@@ -294,7 +294,7 @@ $adminInitial = strtoupper($adminInitial ?: 'A');
         <nav class="admin-nav">
             <?php foreach ($navItems as $item): ?>
             <div class="admin-nav-item <?= $currentPage === $item['page'] ? 'active' : '' ?>">
-                <a href="<?= $item['page'] === 'index' ? '../index.php' : $item['page'] . '.php' ?>">
+                <a href="<?= $item['path'] ?>">
                     <span class="nav-icon"><?= $item['icon'] ?></span>
                     <?= $item['label'] ?>
                 </a>
@@ -305,7 +305,7 @@ $adminInitial = strtoupper($adminInitial ?: 'A');
         <div class="admin-sidebar-footer">
             <div class="text-white-50 small mb-2"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></div>
             <a href="../../pages/memorial.php" target="_blank">🌐 View Memorial</a>
-            <a href="../logout.php">🚪 Sign Out</a>
+            <a href="../../logout.php">🚪 Sign Out</a>
         </div>
     </aside>
 
