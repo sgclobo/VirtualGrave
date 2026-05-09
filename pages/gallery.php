@@ -133,7 +133,7 @@ include __DIR__ . '/../includes/header.php';
               <option value="special" selected>Special Moments</option>
             </select>
           </div>
-          <input type="hidden" name="csrf_token" value="<?= getCsrfToken() ?>">
+          <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
           <button type="submit" class="btn btn-memorial w-100">Submit Photo</button>
           <div id="suggestPhotoMessage" class="mt-3 alert d-none" role="alert"></div>
         </form>
