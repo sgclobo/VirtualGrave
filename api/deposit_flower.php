@@ -67,7 +67,7 @@ try {
 
     // Insert deposited flower
     $stmt = $db->prepare("
-        INSERT INTO deposited_flowers (user_id, flower_id, message, deposited_at)
+        INSERT INTO deposited_flowers (user_id, flower_id, message, created_at)
         VALUES (?, ?, ?, NOW())
     ");
     $stmt->execute([$userId, $flowerId, $message ?: null]);
