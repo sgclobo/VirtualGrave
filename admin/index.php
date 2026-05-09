@@ -29,7 +29,7 @@ foreach ($queries as $key => $sql) {
 }
 
 // Recent members
-$recentMembers = $db->query("SELECT full_name, username, country, status, created_at FROM users ORDER BY created_at DESC LIMIT 5")->fetchAll();
+$recentMembers = $db->query("SELECT full_name, username, country, status, registered_at AS created_at FROM users ORDER BY registered_at DESC LIMIT 5")->fetchAll();
 
 // Recent prayers (moderation)
 $recentPrayers = $db->query("SELECT p.title, p.category, p.created_at, u.full_name FROM prayers p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT 5")->fetchAll();
@@ -147,8 +147,13 @@ include 'includes/header.php';
                     </thead>
                     <tbody>
                         <?php foreach ($recentPrayers as $p): ?>
+                        <?php
+                            $prayerTitle = $p['title'] ?? '';
+                            $shortTitle = function_exists('mb_substr') ? mb_substr($prayerTitle, 0, 30) : substr($prayerTitle, 0, 30);
+                            $titleLength = function_exists('mb_strlen') ? mb_strlen($prayerTitle) : strlen($prayerTitle);
+                        ?>
                         <tr>
-                            <td class="small"><?= htmlspecialchars(mb_substr($p['title'], 0, 30)) ?><?= mb_strlen($p['title']) > 30 ? '…' : '' ?></td>
+                            <td class="small"><?= htmlspecialchars($shortTitle) ?><?= $titleLength > 30 ? '…' : '' ?></td>
                             <td class="small"><?= htmlspecialchars($p['category']) ?></td>
                             <td class="small"><?= htmlspecialchars($p['full_name']) ?></td>
                             <td class="small text-muted"><?= date('M j', strtotime($p['created_at'])) ?></td>

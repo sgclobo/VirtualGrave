@@ -22,6 +22,10 @@ $navItems = [
     ['page' => 'timeline',  'icon' => '📅', 'label' => 'Timeline'],
     ['page' => 'settings',  'icon' => '⚙️', 'label' => 'Settings'],
 ];
+
+$adminName = $_SESSION['admin_name'] ?? 'Admin';
+$adminInitial = function_exists('mb_substr') ? mb_substr($adminName, 0, 1) : substr($adminName, 0, 1);
+$adminInitial = strtoupper($adminInitial ?: 'A');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -211,7 +215,7 @@ $navItems = [
         <h5><?= $pageTitle ?? 'Admin' ?></h5>
         <div class="ms-auto">
             <small class="text-muted d-none d-sm-inline"><?= date('l, F j, Y') ?></small>
-            <div class="admin-avatar"><?= strtoupper(mb_substr($_SESSION['admin_name'] ?? 'A', 0, 1)) ?></div>
+            <div class="admin-avatar"><?= $adminInitial ?></div>
         </div>
     </div>
 
