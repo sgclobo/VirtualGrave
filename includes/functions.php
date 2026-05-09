@@ -17,6 +17,20 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+
+// --- Nav Items Array -----
+$navItems = [
+    ['page' => 'index',     'icon' => '📊', 'label' => 'Dashboard',        'path' => '../index.php'],
+    ['page' => 'members',   'icon' => '👥', 'label' => 'Members',           'path' => 'pages/members.php'],
+    ['page' => 'moderate',  'icon' => '🛡️',  'label' => 'Moderate Content', 'path' => 'pages/moderate.php'],
+    ['page' => 'gallery',   'icon' => '🖼️',  'label' => 'Gallery',          'path' => 'pages/gallery.php'],
+    ['page' => 'flowers',   'icon' => '🌹', 'label' => 'Flowers Catalog',   'path' => 'pages/flowers.php'],
+    ['page' => 'candles',   'icon' => '🕯️', 'label' => 'Candles Catalog',   'path' => 'pages/candles.php'],
+    ['page' => 'biography', 'icon' => '📖', 'label' => 'Biography',         'path' => 'pages/biography.php'],
+    ['page' => 'timeline',  'icon' => '📅', 'label' => 'Timeline',          'path' => 'pages/timeline.php'],
+    ['page' => 'settings',  'icon' => '⚙️', 'label' => 'Settings',          'path' => 'pages/settings.php'],
+];
+
 // ─── CSRF Protection ───────────────────────────────────────
 function csrfToken(): string {
     if (empty($_SESSION['csrf_token'])) {
