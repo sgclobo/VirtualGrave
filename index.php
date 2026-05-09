@@ -133,12 +133,6 @@ const SITE_URL = '<?= SITE_URL ?>';
             <?php endif; ?>
         </div>
     </div>
-
-    <!-- Scroll Indicator -->
-    <div class="scroll-indicator" aria-hidden="true">
-        <span>Scroll</span>
-        <div class="scroll-arrow"></div>
-    </div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
