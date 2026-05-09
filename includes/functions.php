@@ -5,6 +5,23 @@
 
 require_once __DIR__ . '/config.php';
 
+// ─── HTTP Security Headers ───────────────────────────────
+if (!headers_sent()) {
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+
+    $isHttps = (
+        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+        (($_SERVER['SERVER_PORT'] ?? '') === '443') ||
+        (strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
+    );
+
+    if ($isHttps) {
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+    }
+}
+
 // ─── Session Security ──────────────────────────────────────
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
