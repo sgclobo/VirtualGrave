@@ -37,7 +37,7 @@ include __DIR__ . '/../includes/header.php';
 <section class="bio-header">
   <div class="container-memorial text-center">
     <div class="hero-portrait-wrap mx-auto mb-4">
-      <img src="<?= SITE_URL ?>/assets/img/hercio1.jpeg" alt="<?= e($deceasedName) ?>" class="hero-portrait">
+      <img src="/assets/img/hercio1.jpeg" alt="<?= e($deceasedName) ?>" class="hero-portrait">
       <span class="hero-glow-ring" aria-hidden="true"></span>
     </div>
     <span class="section-eyebrow">In Memoriam</span>
