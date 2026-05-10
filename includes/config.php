@@ -11,13 +11,13 @@ if (is_file($localConfigFile)) {
  */
 
 defined('DB_HOST') || define('DB_HOST', 'localhost');
-defined('DB_PORT') || define('DB_PORT', '3306');
-defined('DB_NAME') || define('DB_NAME', 'in_loving_memory');
-defined('DB_USER') || define('DB_USER', 'root');         // Change to your MySQL username
-defined('DB_PASS') || define('DB_PASS', '');             // Change to your MySQL password
+defined('DB_PORT') || define('DB_PORT', '');
+defined('DB_NAME') || define('DB_NAME', 'u149904157_memorial_db');
+defined('DB_USER') || define('DB_USER', 'u149904157_h3rcio');         // Change to your MySQL username
+defined('DB_PASS') || define('DB_PASS', 'H3rcio#53125');              // Change to your MySQL password
 defined('DB_CHARSET') || define('DB_CHARSET', 'utf8mb4');
 
-defined('SITE_URL') || define('SITE_URL', 'http://localhost/memorial');   // Change to your domain
+defined('SITE_URL') || define('SITE_URL', 'https://herciocampos.com');   // Change to your domain
 defined('SITE_ROOT') || define('SITE_ROOT', dirname(__DIR__));
 defined('UPLOAD_DIR') || define('UPLOAD_DIR', SITE_ROOT . '/uploads/');
 
@@ -28,13 +28,11 @@ function getDB(): PDO
 {
     static $pdo = null;
     if ($pdo === null) {
-        $dsn = sprintf(
-            'mysql:host=%s;port=%s;dbname=%s;charset=%s',
-            DB_HOST,
-            DB_PORT,
-            DB_NAME,
-            DB_CHARSET
-        );
+        $dsn = sprintf('mysql:host=%s;', DB_HOST);
+        if (defined('DB_PORT') && DB_PORT !== '') {
+            $dsn .= sprintf('port=%s;', DB_PORT);
+        }
+        $dsn .= sprintf('dbname=%s;charset=%s', DB_NAME, DB_CHARSET);
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
