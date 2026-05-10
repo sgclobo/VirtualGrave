@@ -1,10 +1,10 @@
 <?php
 /**
  * Fix biography section icons - assign unique icons to each section
- * Access: https://herciocampos.com/admin/fix_bio_icons.php?confirm=1
+ * Access: https://herciocampos.com/admin/fix_bio_icons.php
  */
-require_once '../../includes/config.php';
-require_once '../../includes/functions.php';
+require_once '../includes/config.php';
+require_once '../includes/functions.php';
 
 $db = getDB();
 $confirm = isset($_GET['confirm']) && $_GET['confirm'] === '1';
