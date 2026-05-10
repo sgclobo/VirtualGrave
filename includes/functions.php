@@ -138,12 +138,26 @@ function handleUpload(array $file, string $subdir, array $allowed = ['jpg','jpeg
     if ($file['error'] !== UPLOAD_ERR_OK) {
         return ['success' => false, 'message' => 'Upload error.', 'path' => null];
     }
-    
+
+    $normalizedAllowed = array_map(static fn($v) => strtolower(trim((string)$v)), $allowed);
+    $allowedExts = [];
+    $allowedMimes = [];
+    foreach ($normalizedAllowed as $entry) {
+        if ($entry === '') {
+            continue;
+        }
+        if (strpos($entry, '/') !== false) {
+            $allowedMimes[] = $entry;
+        } else {
+            $allowedExts[] = $entry;
+        }
+    }
+
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    if (!in_array($ext, $allowed, true)) {
+    if (!empty($allowedExts) && !in_array($ext, $allowedExts, true)) {
         return ['success' => false, 'message' => 'File type not allowed.', 'path' => null];
     }
-    
+
     $maxBytes = $maxMB * 1024 * 1024;
     if ($file['size'] > $maxBytes) {
         return ['success' => false, 'message' => "File must be under {$maxMB}MB.", 'path' => null];
@@ -153,9 +167,14 @@ function handleUpload(array $file, string $subdir, array $allowed = ['jpg','jpeg
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
     $mime  = finfo_file($finfo, $file['tmp_name']);
     finfo_close($finfo);
+
     $validMimes = ['image/jpeg','image/png','image/gif','image/webp','video/mp4','video/webm','video/ogg'];
     if (!in_array($mime, $validMimes, true)) {
         return ['success' => false, 'message' => 'Invalid file type.', 'path' => null];
+    }
+
+    if (!empty($allowedMimes) && !in_array($mime, $allowedMimes, true)) {
+        return ['success' => false, 'message' => 'File type not allowed.', 'path' => null];
     }
 
     $dir = UPLOAD_DIR . $subdir . '/';
