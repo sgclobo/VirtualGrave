@@ -16,7 +16,18 @@ $diedFull = $died ? date('F j, Y', strtotime($died)) : '';
 
 $pageTitle  = 'Biography';
 $activePage = 'bio';
-$iconMap = ['heart'=>'bi-heart','book'=>'bi-book','briefcase'=>'bi-briefcase','home'=>'bi-house','church'=>'bi-building','star'=>'bi-star'];
+
+// Helper to render icon - emojis directly, or map to Bootstrap Icons
+$renderIcon = function($icon) {
+    $iconMap = ['heart'=>'bi-heart','book'=>'bi-book','briefcase'=>'bi-briefcase','home'=>'bi-house','church'=>'bi-building','star'=>'bi-star'];
+    // If it looks like an emoji (2+ chars or contains special unicode), render directly
+    if (strlen($icon) > 2 || preg_match('/[^\x00-\x7F]/', $icon)) {
+        return ['type' => 'emoji', 'value' => $icon];
+    }
+    // Otherwise map it to a Bootstrap Icon class
+    $class = $iconMap[$icon] ?? 'bi-star';
+    return ['type' => 'bs-icon', 'value' => $class];
+};
 
 include __DIR__ . '/../includes/header.php';
 ?>
@@ -47,11 +58,15 @@ include __DIR__ . '/../includes/header.php';
     <?php else: ?>
 
     <?php foreach ($sections as $i => $sec):
-      $iconClass = $iconMap[$sec['icon']] ?? 'bi-star';
+      $icon = $renderIcon($sec['icon']);
     ?>
     <div class="bio-section reveal reveal-delay-<?= min($i+1,6) ?>">
       <div class="bio-section-icon">
-        <i class="bi <?= $iconClass ?>"></i>
+        <?php if ($icon['type'] === 'emoji'): ?>
+          <span style="font-size: 2rem; display: block;"><?= htmlspecialchars($icon['value']) ?></span>
+        <?php else: ?>
+          <i class="bi <?= $icon['value'] ?>"></i>
+        <?php endif; ?>
       </div>
       <h2 class="bio-section-title"><?= e($sec['section_title']) ?></h2>
       <div class="bio-section-text">
