@@ -27,6 +27,10 @@ $musicUrl = getSetting('music_file', getSetting('ambient_music_url', ''));
     <!-- PWA Manifest -->
     <link rel="manifest" href="<?= SITE_URL ?>/manifest.json">
     <link rel="apple-touch-icon" href="<?= SITE_URL ?>/assets/images/icon-192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="<?= SITE_URL ?>/assets/img/hercio.png">
+    <link rel="shortcut icon" href="<?= SITE_URL ?>/assets/img/hercio.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
