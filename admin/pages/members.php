@@ -120,7 +120,9 @@ include '../includes/header.php';
                 <td>
                     <div class="d-flex align-items-center gap-2">
                         <?php if ($member['profile_photo']): ?>
-                        <img src="../../uploads/avatars/<?= htmlspecialchars($member['profile_photo']) ?>"
+                        <?php $photoPath = ltrim($member['profile_photo'], '/'); ?>
+                        <?php if (strpos($photoPath, '/') === false) $photoPath = 'avatars/' . $photoPath; ?>
+                        <img src="<?= SITE_URL ?>/uploads/<?= htmlspecialchars($photoPath) ?>"
                              class="rounded-circle" width="32" height="32" style="object-fit:cover;" alt="">
                         <?php else: ?>
                         <?php $initial = function_exists('mb_substr') ? strtoupper(mb_substr($member['full_name'], 0, 1)) : strtoupper(substr($member['full_name'], 0, 1)); ?>
