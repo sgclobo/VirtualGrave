@@ -3,18 +3,11 @@
  * Caches static assets for offline browsing
  */
 
-const CACHE_NAME     = 'memorial-v1';
+const CACHE_NAME     = 'memorial-v2';
 const OFFLINE_PAGE   = '/offline.html';
 
 // Static assets to pre-cache
 const PRECACHE_ASSETS = [
-  '/',
-  '/index.php',
-  '/pages/biography.php',
-  '/pages/timeline.php',
-  '/pages/gallery.php',
-  '/pages/memorial.php',
-  '/pages/guestbook.php',
   '/assets/css/main.css',
   '/assets/css/animations.css',
   '/assets/js/main.js',
@@ -56,6 +49,16 @@ self.addEventListener('fetch', event => {
   if (url.pathname.startsWith('/admin') ||
       url.pathname.startsWith('/api')   ||
       url.pathname.startsWith('/uploads')) {
+    return;
+  }
+
+  // Use network-first for HTML/page navigations to avoid stale cached pages.
+  if (request.mode === 'navigate' || request.destination === 'document') {
+    event.respondWith(
+      fetch(request)
+        .catch(() => caches.match(request))
+        .then(response => response || caches.match(OFFLINE_PAGE))
+    );
     return;
   }
 
