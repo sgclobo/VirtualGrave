@@ -21,8 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf($_POST['csrf_token'] ?? 
         'auto_approve_members'    => isset($_POST['auto_approve_members']) ? '1' : '0',
         'auto_approve_testimonies'=> isset($_POST['auto_approve_testimonies']) ? '1' : '0',
         'auto_approve_guestbook'  => isset($_POST['auto_approve_guestbook']) ? '1' : '0',
-        'music_file'              => trim($_POST['ambient_music_url'] ?? ''),
-        'ambient_music_url'       => trim($_POST['ambient_music_url'] ?? ''),  // keep legacy key in sync
+        'ambient_music_url'       => trim($_POST['ambient_music_url'] ?? ''),
         'visit_counter_visible'   => isset($_POST['visit_counter_visible']) ? '1' : '0',
         'petals_enabled'          => isset($_POST['petals_enabled']) ? '1' : '0',
     ];
@@ -123,7 +122,7 @@ include '../includes/header.php';
                 <label class="form-label small">Ambient Music URL</label>
                 <input type="url" name="ambient_music_url" class="form-control form-control-sm"
                        placeholder="https://… .mp3"
-                       value="<?= htmlspecialchars($g('music_file', $g('ambient_music_url',''))) ?>">
+                       value="<?= htmlspecialchars($g('ambient_music_url','')) ?>">
                 <div class="form-text">Leave empty to disable ambient music toggle.</div>
             </div>
             <div class="form-check mb-2">

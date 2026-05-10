@@ -5,12 +5,12 @@
  */
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'u149904157_memorial_db');
-define('DB_USER', 'u149904157_h3rcio');         // Change to your MySQL username
-define('DB_PASS', 'H3rcio#53125');             // Change to your MySQL password
+define('DB_NAME', 'in_loving_memory');
+define('DB_USER', 'root');         // Change to your MySQL username
+define('DB_PASS', '');             // Change to your MySQL password
 define('DB_CHARSET', 'utf8mb4');
 
-define('SITE_URL', 'https://herciocampos.com');   // Change to your domain
+define('SITE_URL', 'http://localhost/memorial');   // Change to your domain
 define('SITE_ROOT', dirname(__DIR__));
 define('UPLOAD_DIR', SITE_ROOT . '/uploads/');
 

@@ -16,18 +16,7 @@ $diedFull = $died ? date('F j, Y', strtotime($died)) : '';
 
 $pageTitle  = 'Biography';
 $activePage = 'bio';
-
-// Helper to render icon - emojis directly, or map to Bootstrap Icons
-$renderIcon = function($icon) {
-    $iconMap = ['heart'=>'bi-heart','book'=>'bi-book','briefcase'=>'bi-briefcase','home'=>'bi-house','church'=>'bi-building','star'=>'bi-star'];
-    // If it looks like an emoji (2+ chars or contains special unicode), render directly
-    if (strlen($icon) > 2 || preg_match('/[^\x00-\x7F]/', $icon)) {
-        return ['type' => 'emoji', 'value' => $icon];
-    }
-    // Otherwise map it to a Bootstrap Icon class
-    $class = $iconMap[$icon] ?? 'bi-star';
-    return ['type' => 'bs-icon', 'value' => $class];
-};
+$iconMap = ['heart'=>'bi-heart','book'=>'bi-book','briefcase'=>'bi-briefcase','home'=>'bi-house','church'=>'bi-building','star'=>'bi-star'];
 
 include __DIR__ . '/../includes/header.php';
 ?>
@@ -36,9 +25,8 @@ include __DIR__ . '/../includes/header.php';
 <!-- PAGE HERO -->
 <section class="bio-header">
   <div class="container-memorial text-center">
-    <div class="hero-portrait-wrap mx-auto mb-4">
-      <img src="/assets/img/hercio1.jpeg" alt="<?= e($deceasedName) ?>" class="hero-portrait">
-      <span class="hero-glow-ring" aria-hidden="true"></span>
+    <div class="hero-portrait-placeholder mx-auto mb-4" style="width:140px;height:140px;font-size:4rem;">
+      <i class="bi bi-person"></i>
     </div>
     <span class="section-eyebrow">In Memoriam</span>
     <h1 class="bio-name"><?= e($deceasedName) ?></h1>
@@ -59,15 +47,11 @@ include __DIR__ . '/../includes/header.php';
     <?php else: ?>
 
     <?php foreach ($sections as $i => $sec):
-      $icon = $renderIcon($sec['icon']);
+      $iconClass = $iconMap[$sec['icon']] ?? 'bi-star';
     ?>
     <div class="bio-section reveal reveal-delay-<?= min($i+1,6) ?>">
       <div class="bio-section-icon">
-        <?php if ($icon['type'] === 'emoji'): ?>
-          <span style="font-size: 2rem; display: block;"><?= htmlspecialchars($icon['value']) ?></span>
-        <?php else: ?>
-          <i class="bi <?= $icon['value'] ?>"></i>
-        <?php endif; ?>
+        <i class="bi <?= $iconClass ?>"></i>
       </div>
       <h2 class="bio-section-title"><?= e($sec['section_title']) ?></h2>
       <div class="bio-section-text">

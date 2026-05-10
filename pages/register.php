@@ -10,9 +10,7 @@ $errors = [];
 $values = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if (!verifyCsrf()) {
-    $errors[] = 'Invalid security token. Please refresh and try again.';
-  }
+    verifyCsrf();
 
     $values = [
         'full_name'   => trim($_POST['full_name'] ?? ''),
@@ -47,12 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Handle profile photo
             $photoPath = null;
             if (!empty($_FILES['profile_photo']['name'])) {
-                $uploadResult = handleUpload($_FILES['profile_photo'], 'avatars', ['jpg','jpeg','png','gif','webp']);
-                if ($uploadResult['success']) {
-                    $photoPath = $uploadResult['path'];
-                } else {
-                    $errors[] = 'Invalid profile photo: ' . $uploadResult['message'];
-                }
+                $photoPath = handleUpload($_FILES['profile_photo'], 'avatars', ['jpg','jpeg','png','gif','webp']);
+                if (!$photoPath) $errors[] = 'Invalid profile photo. Use JPG/PNG under 5MB.';
             }
 
             if (empty($errors)) {

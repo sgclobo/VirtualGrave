@@ -18,7 +18,7 @@ $total      = (int)$countStmt->fetchColumn();
 $totalPages = ceil($total / $perPage);
 
 $stmt = $db->prepare("
-    SELECT t.*, u.full_name, u.username, u.profile_photo AS avatar, u.country, u.relationship
+    SELECT t.*, u.full_name, u.username, u.avatar, u.country, u.relationship
     FROM testimonies t
     JOIN users u ON t.user_id = u.id
     WHERE t.is_approved = 1
@@ -79,9 +79,9 @@ $siteTitle = getSetting('site_title', 'In Loving Memory');
         <?php foreach ($testimonies as $t): ?>
         <div class="col-md-6 col-lg-4 reveal">
             <div class="testimony-card h-100">
-                <?php if ($t['image']): ?>
+                <?php if ($t['image_path']): ?>
                 <div class="testimony-image-wrap">
-                    <img src="../uploads/testimonies/<?= htmlspecialchars($t['image']) ?>"
+                    <img src="../uploads/testimonies/<?= htmlspecialchars($t['image_path']) ?>"
                          class="testimony-img" alt="" loading="lazy">
                 </div>
                 <?php endif; ?>
@@ -96,7 +96,7 @@ $siteTitle = getSetting('site_title', 'In Loving Memory');
                     <button class="btn btn-link btn-sm p-0 testimony-read-more"
                             data-title="<?= htmlspecialchars($t['title']) ?>"
                             data-text="<?= htmlspecialchars($t['testimony_text']) ?>"
-                            data-img="<?= $t['image'] ? '../uploads/testimonies/'.htmlspecialchars($t['image']) : '' ?>">
+                            data-img="<?= $t['image_path'] ? '../uploads/testimonies/'.htmlspecialchars($t['image_path']) : '' ?>">
                         Read full memory
                     </button>
                     <?php endif; ?>

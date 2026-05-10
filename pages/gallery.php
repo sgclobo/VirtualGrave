@@ -46,12 +46,6 @@ include __DIR__ . '/../includes/header.php';
         <?= e($label) ?>
       </button>
       <?php endforeach; ?>
-      <?php if (isLoggedIn()): ?>
-      <button type="button" class="gallery-filter-btn" data-bs-toggle="modal" data-bs-target="#suggestPhotoModal"
-        style="background:rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.5);">
-        📸 Suggest Photo
-      </button>
-      <?php endif; ?>
     </div>
 
     <?php if (empty($items)): ?>
@@ -97,91 +91,5 @@ include __DIR__ . '/../includes/header.php';
     <p class="lightbox-caption" id="lightboxCaption"></p>
   </div>
 </div>
-
-<!-- SUGGEST PHOTO MODAL -->
-<div class="modal fade" id="suggestPhotoModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background:#2a2040;border:1px solid rgba(201,168,76,0.3);">
-      <div class="modal-header border-bottom" style="border-color:rgba(201,168,76,0.2)!important;">
-        <h5 class="modal-title">📸 Suggest a Photo</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="suggestPhotoForm" enctype="multipart/form-data">
-          <div class="mb-3">
-            <label class="form-label small text-muted-memorial">Photo <span class="text-danger">*</span></label>
-            <input type="file" id="photoFile" name="photo" class="form-control form-control-sm" 
-                   accept="image/jpeg,image/png,image/webp,image/gif" required
-                   style="background:#1a1a2e;border-color:rgba(201,168,76,0.3);color:#faf8f3;">
-            <div class="form-text">JPG, PNG, WEBP, or GIF. Max 5MB.</div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label small text-muted-memorial">Caption</label>
-            <input type="text" id="photoCaption" name="caption" class="form-control form-control-sm" 
-                   maxlength="255" placeholder="A short description…"
-                   style="background:#1a1a2e;border-color:rgba(201,168,76,0.3);color:#faf8f3;">
-          </div>
-          <div class="mb-3">
-            <label class="form-label small text-muted-memorial">Category</label>
-            <select id="photoCategory" name="category" class="form-select form-select-sm"
-                    style="background:#1a1a2e;border-color:rgba(201,168,76,0.3);color:#faf8f3;">
-              <option value="childhood">Childhood</option>
-              <option value="family">Family</option>
-              <option value="work">Work</option>
-              <option value="celebrations">Celebrations</option>
-              <option value="travels">Travels</option>
-              <option value="special" selected>Special Moments</option>
-            </select>
-          </div>
-          <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
-          <button type="submit" class="btn btn-memorial w-100">Submit Photo</button>
-          <div id="suggestPhotoMessage" class="mt-3 alert d-none" role="alert"></div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('suggestPhotoForm');
-  const messageDiv = document.getElementById('suggestPhotoMessage');
-
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const formData = new FormData(form);
-      
-      try {
-        const response = await fetch(SITE_URL + '/api/suggest_photo.php', {
-          method: 'POST',
-          body: formData
-        });
-        
-        const data = await response.json();
-        
-        messageDiv.classList.remove('d-none');
-        
-        if (data.success) {
-          messageDiv.className = 'mt-3 alert alert-success';
-          messageDiv.textContent = data.message;
-          form.reset();
-          setTimeout(() => {
-            bootstrap.Modal.getInstance(document.getElementById('suggestPhotoModal')).hide();
-            messageDiv.classList.add('d-none');
-          }, 2000);
-        } else {
-          messageDiv.className = 'mt-3 alert alert-danger';
-          messageDiv.textContent = data.message;
-        }
-      } catch (error) {
-        messageDiv.className = 'mt-3 alert alert-danger';
-        messageDiv.textContent = 'An error occurred. Please try again.';
-      }
-    });
-  }
-});
-</script>
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -5,23 +5,6 @@
 
 require_once __DIR__ . '/config.php';
 
-// ─── HTTP Security Headers ───────────────────────────────
-if (!headers_sent()) {
-    header('X-Content-Type-Options: nosniff');
-    header('X-Frame-Options: SAMEORIGIN');
-    header('Referrer-Policy: strict-origin-when-cross-origin');
-
-    $isHttps = (
-        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
-        (($_SERVER['SERVER_PORT'] ?? '') === '443') ||
-        (strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
-    );
-
-    if ($isHttps) {
-        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
-    }
-}
-
 // ─── Session Security ──────────────────────────────────────
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
@@ -33,20 +16,6 @@ if (session_status() === PHP_SESSION_NONE) {
     ]);
     session_start();
 }
-
-
-// --- Nav Items Array -----
-$navItems = [
-    ['page' => 'index',     'icon' => '📊', 'label' => 'Dashboard',        'path' => '../index.php'],
-    ['page' => 'members',   'icon' => '👥', 'label' => 'Members',           'path' => 'pages/members.php'],
-    ['page' => 'moderate',  'icon' => '🛡️',  'label' => 'Moderate Content', 'path' => 'pages/moderate.php'],
-    ['page' => 'gallery',   'icon' => '🖼️',  'label' => 'Gallery',          'path' => 'pages/gallery.php'],
-    ['page' => 'flowers',   'icon' => '🌹', 'label' => 'Flowers Catalog',   'path' => 'pages/flowers.php'],
-    ['page' => 'candles',   'icon' => '🕯️', 'label' => 'Candles Catalog',   'path' => 'pages/candles.php'],
-    ['page' => 'biography', 'icon' => '📖', 'label' => 'Biography',         'path' => 'pages/biography.php'],
-    ['page' => 'timeline',  'icon' => '📅', 'label' => 'Timeline',          'path' => 'pages/timeline.php'],
-    ['page' => 'settings',  'icon' => '⚙️', 'label' => 'Settings',          'path' => 'pages/settings.php'],
-];
 
 // ─── CSRF Protection ───────────────────────────────────────
 function csrfToken(): string {
@@ -60,16 +29,12 @@ function csrfField(): string {
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrfToken()) . '">';
 }
 
-function verifyCsrf(?string $token = null): bool {
-    if ($token === null) {
-        $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+function verifyCsrf(): void {
+    $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    if (!hash_equals(csrfToken(), $token)) {
+        http_response_code(403);
+        die(jsonError('Invalid security token. Please refresh and try again.'));
     }
-
-    if ($token === '') {
-        return false;
-    }
-
-    return hash_equals(csrfToken(), $token);
 }
 
 // ─── Output Helpers ────────────────────────────────────────
@@ -134,59 +99,27 @@ function verifyPassword(string $password, string $hash): bool {
 }
 
 // ─── Upload Helpers ────────────────────────────────────────
-function handleUpload(array $file, string $subdir, array $allowed = ['jpg','jpeg','png','gif','webp'], int $maxMB = 5): array {
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        return ['success' => false, 'message' => 'Upload error.', 'path' => null];
-    }
-
-    $normalizedAllowed = array_map(static fn($v) => strtolower(trim((string)$v)), $allowed);
-    $allowedExts = [];
-    $allowedMimes = [];
-    foreach ($normalizedAllowed as $entry) {
-        if ($entry === '') {
-            continue;
-        }
-        if (strpos($entry, '/') !== false) {
-            $allowedMimes[] = $entry;
-        } else {
-            $allowedExts[] = $entry;
-        }
-    }
-
+function handleUpload(array $file, string $subdir, array $allowed = ['jpg','jpeg','png','gif','webp']): ?string {
+    if ($file['error'] !== UPLOAD_ERR_OK) return null;
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    if (!empty($allowedExts) && !in_array($ext, $allowedExts, true)) {
-        return ['success' => false, 'message' => 'File type not allowed.', 'path' => null];
-    }
-
-    $maxBytes = $maxMB * 1024 * 1024;
-    if ($file['size'] > $maxBytes) {
-        return ['success' => false, 'message' => "File must be under {$maxMB}MB.", 'path' => null];
-    }
+    if (!in_array($ext, $allowed, true)) return null;
+    if ($file['size'] > 5 * 1024 * 1024) return null; // 5MB max
 
     // Validate MIME type
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
     $mime  = finfo_file($finfo, $file['tmp_name']);
     finfo_close($finfo);
-
-    $validMimes = ['image/jpeg','image/png','image/gif','image/webp','video/mp4','video/webm','video/ogg'];
-    if (!in_array($mime, $validMimes, true)) {
-        return ['success' => false, 'message' => 'Invalid file type.', 'path' => null];
-    }
-
-    if (!empty($allowedMimes) && !in_array($mime, $allowedMimes, true)) {
-        return ['success' => false, 'message' => 'File type not allowed.', 'path' => null];
-    }
+    $validMimes = ['image/jpeg','image/png','image/gif','image/webp'];
+    if (!in_array($mime, $validMimes, true)) return null;
 
     $dir = UPLOAD_DIR . $subdir . '/';
     if (!is_dir($dir)) mkdir($dir, 0755, true);
 
     $newName = uniqid('', true) . '.' . $ext;
     $dest    = $dir . $newName;
-    if (!move_uploaded_file($file['tmp_name'], $dest)) {
-        return ['success' => false, 'message' => 'Failed to move upload file.', 'path' => null];
-    }
+    if (!move_uploaded_file($file['tmp_name'], $dest)) return null;
 
-    return ['success' => true, 'path' => $subdir . '/' . $newName];
+    return $subdir . '/' . $newName;
 }
 
 // ─── Validation ────────────────────────────────────────────

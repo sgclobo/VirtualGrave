@@ -62,7 +62,7 @@ try {
 
     // Insert lit candle
     $stmt = $db->prepare("
-        INSERT INTO lit_candles (user_id, candle_id, dedication, created_at)
+        INSERT INTO lit_candles (user_id, candle_id, dedication, lit_at)
         VALUES (?, ?, ?, NOW())
     ");
     $stmt->execute([$userId, $candleId, $dedication ?: null]);

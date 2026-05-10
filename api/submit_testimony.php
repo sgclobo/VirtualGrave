@@ -64,12 +64,12 @@ if (!empty($_FILES['testimony_image']['name'])) {
 }
 
 try {
-    $stmt = $db->prepare("SELECT full_name, username, profile_photo FROM users WHERE id = ?");
+    $stmt = $db->prepare("SELECT full_name, username, avatar FROM users WHERE id = ?");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
 
     $stmt = $db->prepare("
-        INSERT INTO testimonies (user_id, title, testimony_text, image, is_approved, created_at)
+        INSERT INTO testimonies (user_id, title, testimony_text, image_path, is_approved, created_at)
         VALUES (?, ?, ?, ?, 0, NOW())
     ");
     $stmt->execute([$userId, $title, $testimonyText, $imagePath]);
