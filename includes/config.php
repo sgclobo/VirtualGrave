@@ -1,28 +1,39 @@
 <?php
+
+$localConfigFile = __DIR__ . '/config.local.php';
+if (is_file($localConfigFile)) {
+    require_once $localConfigFile;
+}
+
 /**
  * IN LOVING MEMORY — Database Configuration
  * Secure PDO connection with prepared statements
  */
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'in_loving_memory');
-define('DB_USER', 'root');         // Change to your MySQL username
-define('DB_PASS', '');             // Change to your MySQL password
-define('DB_CHARSET', 'utf8mb4');
+defined('DB_HOST') || define('DB_HOST', 'localhost');
+defined('DB_PORT') || define('DB_PORT', '3306');
+defined('DB_NAME') || define('DB_NAME', 'in_loving_memory');
+defined('DB_USER') || define('DB_USER', 'root');         // Change to your MySQL username
+defined('DB_PASS') || define('DB_PASS', '');             // Change to your MySQL password
+defined('DB_CHARSET') || define('DB_CHARSET', 'utf8mb4');
 
-define('SITE_URL', 'http://localhost/memorial');   // Change to your domain
-define('SITE_ROOT', dirname(__DIR__));
-define('UPLOAD_DIR', SITE_ROOT . '/uploads/');
+defined('SITE_URL') || define('SITE_URL', 'http://localhost/memorial');   // Change to your domain
+defined('SITE_ROOT') || define('SITE_ROOT', dirname(__DIR__));
+defined('UPLOAD_DIR') || define('UPLOAD_DIR', SITE_ROOT . '/uploads/');
 
 /**
  * Returns a singleton PDO instance
  */
-function getDB(): PDO {
+function getDB(): PDO
+{
     static $pdo = null;
     if ($pdo === null) {
         $dsn = sprintf(
-            'mysql:host=%s;dbname=%s;charset=%s',
-            DB_HOST, DB_NAME, DB_CHARSET
+            'mysql:host=%s;port=%s;dbname=%s;charset=%s',
+            DB_HOST,
+            DB_PORT,
+            DB_NAME,
+            DB_CHARSET
         );
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -46,7 +57,8 @@ function getDB(): PDO {
 /**
  * Fetch site settings from DB (cached)
  */
-function getSetting(string $key, string $default = ''): string {
+function getSetting(string $key, string $default = ''): string
+{
     static $settings = null;
     if ($settings === null) {
         try {
