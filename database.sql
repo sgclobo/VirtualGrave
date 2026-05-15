@@ -255,17 +255,17 @@ INSERT INTO `candles_catalog` (`candle_name`, `candle_type`, `image`, `glow_colo
 
 -- Timeline
 INSERT INTO `timeline` (`year`, `month`, `title`, `description`, `icon`, `category`, `sort_order`) VALUES
-(1945, 3, 'Birth', 'Hercio Maria da Neves Campos was born on a warm March morning in Dili, Timor-Leste, bringing joy to his beloved family.', 'baby', 'birth', 1),
-(1952, 9, 'First Steps in Education', 'Began his primary education with remarkable curiosity and dedication, showing early signs of his brilliant mind.', 'school', 'education', 2),
-(1963, NULL, 'Secondary Education', 'Completed secondary schooling with distinction, earning the admiration of teachers and peers alike.', 'book', 'education', 3),
-(1968, NULL, 'Higher Studies', 'Pursued higher education with unwavering determination, laying the foundation for a life of service.', 'graduation-cap', 'education', 4),
-(1972, 6, 'Marriage', 'United in sacred matrimony, beginning a love story that would span decades and inspire generations.', 'heart', 'family', 5),
-(1975, NULL, 'Professional Career Begins', 'Embarked on a distinguished professional journey, serving his community with integrity and passion.', 'briefcase', 'work', 6),
-(1980, NULL, 'Community Leadership', 'Took on leadership roles in the community, becoming a pillar of strength and guidance for many.', 'star', 'achievement', 7),
-(1990, NULL, 'Distinguished Service Recognition', 'Received recognition for decades of dedicated service to his community and nation.', 'award', 'achievement', 8),
-(1995, NULL, 'Family Milestones', 'Celebrated the growing Campos family — children, grandchildren, and the bonds that would last forever.', 'family', 'family', 9),
-(2005, NULL, 'Retirement', 'After a lifetime of service, stepped gracefully into retirement, sharing wisdom and love with family.', 'sunset', 'retirement', 10),
-(2024, 1, 'Returned to Eternity', 'On January 8th, 2024, Hercio Maria da Neves Campos peacefully returned to the Lord\'s embrace, leaving behind a legacy of love.', 'dove', 'passing', 11);
+(1953, 10, 'Birth & Childhood', 'Hércio Maria das Neves Campos was born on October 25, 1953, in Laclubar, son of Manuel Ângelo Pires de Oliveira Campos and Edviges Sequeira. He grew up in Dili in a simple family environment, known for being responsible, hardworking, curious, and respectful.', 'baby', 'birth', 1),
+(1967, NULL, 'Secondary Education', 'Attended the Professor Silva Cunha Technical School in Dili between 1967 and 1969, completing his secondary technical studies. Later continued his studies at the Francisco Xavier Private School.', 'school', 'education', 2),
+(1972, NULL, 'Youth & Music', 'Between 1972 and the following years, he was a vocalist and played bass in the musical bands Acadêmico, Bealuli, and Lords, demonstrating a passion for music from an early age.', 'heart', 'personal', 3),
+(1970, NULL, 'Beginning of Adulthood', 'Began his professional life in different fields, gaining experience through administrative work, commerce, and business. He stood out professionally for his dedication, responsibility, discipline, and entrepreneurial spirit.', 'briefcase', 'work', 4),
+(1970, NULL, 'Marriage & Family', 'Met Ana Carrascalão in Dili during the 1970s. Later they married, building a family with their children: Holdérico, Bebé, Hércio, Nino, and Heglise Campos.', 'heart', 'family', 5),
+(1980, NULL, 'Entrepreneurial Career', 'Starting in the 1980s, Hércio Campos became an entrepreneur, excelling in different areas of business and investment, building a career marked by entrepreneurial vision and dedication.', 'briefcase', 'work', 6),
+(1980, NULL, 'Resistance Period Support', 'During the Indonesian occupation, Hércio played an important role in supporting Timorese people involved in the resistance, working in Jakarta with cousin Júlio Alfaro and coordinating with entities in Macau.', 'star', 'achievement', 7),
+(2010, NULL, 'CCI President', 'Elected President of the Chamber of Commerce and Industry (CCI) of the Dili District, a position he held between 2010 and 2014, leading initiatives related to economic and business development.', 'award', 'achievement', 8),
+(2014, NULL, 'Hotel & Tourism Interest', 'In the last years of his life, he began to dedicate himself to the hotel and tourism industry, demonstrating an interest in the growth of the tourism sector and development of hospitality infrastructure.', 'briefcase', 'work', 9),
+(2020, NULL, 'Recent Years & Legacy', 'In recent years, he dedicated himself especially to his family, grandchildren, spending time with friends, and personal and business projects. He continued to be a role model for his children, nephews, and friends.', 'family', 'family', 10),
+(2026, 5, 'Passed Away', 'Hércio Maria das Neves Campos passed away on May 4, 2026, leaving a profound mark on the lives of his family, friends, and all those who had the privilege of knowing him. His life was marked by work, dedication to family, friendship, and entrepreneurial spirit.', 'dove', 'passing', 11);
 
 -- Biography Sections
 INSERT INTO `biography` (`section_title`, `section_content`, `section_order`, `icon`) VALUES
