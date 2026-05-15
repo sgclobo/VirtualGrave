@@ -3,8 +3,8 @@
  * Show recent PHP error log entries — DELETE after use.
  */
 define('ADMIN_PAGE', true);
-require_once '../../includes/config.php';
-require_once '../../includes/functions.php';
+require_once '../includes/config.php';
+require_once '../includes/functions.php';
 requireAdmin();
 
 header('Content-Type: text/plain; charset=utf-8');
