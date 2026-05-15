@@ -2,6 +2,11 @@
 /**
  * Admin Dashboard
  */
+// Temporary: surface PHP errors so we can diagnose the 500
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 define('ADMIN_PAGE', true);
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
