@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" name="password" class="form-control memorial-input" placeholder="••••••••"
                         required>
                 </div>
-                <button type="submit" class="btn btn-warning btn-memorial btn-primary-memorial admin-login-btn">Sign In</button>
+                <button type="submit" style="display:block;width:100%;padding:0.75rem 1rem;font-size:1rem;font-weight:700;background:#c9a84c;color:#fff;border:none;border-radius:999px;cursor:pointer;letter-spacing:0.03em;">Sign In</button>
             </form>
 
             <div class="text-center mt-4">
