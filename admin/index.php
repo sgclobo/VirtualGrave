@@ -7,7 +7,7 @@ require_once '../includes/config.php';
 require_once '../includes/functions.php';
 
 $pageTitle = 'Dashboard';
-$db = getDB();
+$db = null;
 $dbError = null;
 
 // Gather stats
@@ -21,6 +21,8 @@ $recentPrayers = [];
 $visitData     = [];
 
 try {
+    $db = getDB();
+
     $queries = [
         'total_members'       => "SELECT COUNT(*) FROM users WHERE status = 'approved'",
         'pending_members'     => "SELECT COUNT(*) FROM users WHERE status = 'pending'",
@@ -51,9 +53,9 @@ try {
         GROUP BY DATE(visited_at)
         ORDER BY visit_date ASC
     ")->fetchAll();
-} catch (PDOException $e) {
-    error_log('Admin dashboard query error: ' . $e->getMessage());
-    $dbError = 'A database error occurred: ' . htmlspecialchars($e->getMessage());
+} catch (Throwable $e) {
+    error_log('Admin dashboard error: ' . $e->getMessage());
+    $dbError = 'A dashboard error occurred. Please retry in a moment.';
 }
 
 include 'includes/header.php';
