@@ -10,17 +10,18 @@ if (!defined('ADMIN_PAGE')) {
 requireAdmin();
 
 $currentPage = basename($_SERVER['PHP_SELF'], '.php');
+$adminPagesBase = SITE_URL . '/admin/pages';
 
 $navItems = [
     ['page' => 'index',     'icon' => '📊', 'label' => 'Dashboard',        'path' => SITE_URL . '/admin/index.php'],
-    ['page' => 'members',   'icon' => '👥', 'label' => 'Members',           'path' => SITE_URL . '/admin/pages/members.php'],
-    ['page' => 'moderate',  'icon' => '🛡️',  'label' => 'Moderate Content', 'path' => SITE_URL . '/admin/pages/moderate.php'],
-    ['page' => 'gallery',   'icon' => '🖼️',  'label' => 'Gallery',          'path' => SITE_URL . '/admin/pages/gallery.php'],
-    ['page' => 'flowers',   'icon' => '🌹', 'label' => 'Flowers Catalog',   'path' => SITE_URL . '/admin/pages/flowers.php'],
-    ['page' => 'candles',   'icon' => '🕯️', 'label' => 'Candles Catalog',   'path' => SITE_URL . '/admin/pages/candles.php'],
-    ['page' => 'biography', 'icon' => '📖', 'label' => 'Biography',         'path' => SITE_URL . '/admin/pages/biography.php'],
-    ['page' => 'timeline',  'icon' => '📅', 'label' => 'Timeline',          'path' => SITE_URL . '/admin/pages/timeline.php'],
-    ['page' => 'settings',  'icon' => '⚙️', 'label' => 'Settings',          'path' => SITE_URL . '/admin/pages/settings.php'],
+    ['page' => 'members',   'icon' => '👥', 'label' => 'Members',           'path' => $adminPagesBase . '/members.php'],
+    ['page' => 'moderate',  'icon' => '🛡️',  'label' => 'Moderate Content', 'path' => $adminPagesBase . '/moderate.php'],
+    ['page' => 'gallery',   'icon' => '🖼️',  'label' => 'Gallery',          'path' => $adminPagesBase . '/gallery.php'],
+    ['page' => 'flowers',   'icon' => '🌹', 'label' => 'Flowers Catalog',   'path' => $adminPagesBase . '/flowers.php'],
+    ['page' => 'candles',   'icon' => '🕯️', 'label' => 'Candles Catalog',   'path' => $adminPagesBase . '/candles.php'],
+    ['page' => 'biography', 'icon' => '📖', 'label' => 'Biography',         'path' => $adminPagesBase . '/biography.php'],
+    ['page' => 'timeline',  'icon' => '📅', 'label' => 'Timeline',          'path' => $adminPagesBase . '/timeline.php'],
+    ['page' => 'settings',  'icon' => '⚙️', 'label' => 'Settings',          'path' => $adminPagesBase . '/settings.php'],
 ];
 
 $adminName = $_SESSION['admin_name'] ?? 'Admin';
@@ -281,6 +282,15 @@ $adminInitial = strtoupper($adminInitial ?: 'A');
     <script>
     const SITE_URL = '<?= SITE_URL ?>';
     </script>
+    // Normalize any legacy /admin/<page>.php links to /admin/pages/<page>.php.
+    document.querySelectorAll('.admin-nav-item a').forEach((link) => {
+        const rawHref = link.getAttribute('href') || '';
+        const legacyMatch = rawHref.match(/\/admin\/(members|moderate|gallery|flowers|candles|biography|timeline|settings)\.php$/);
+        if (legacyMatch) {
+            link.setAttribute('href', `${SITE_URL}/admin/pages/${legacyMatch[1]}.php`);
+        }
+    });
+
 </head>
 
 <body>
