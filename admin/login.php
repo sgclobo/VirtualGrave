@@ -165,7 +165,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" name="password" class="form-control memorial-input" placeholder="••••••••"
                         required>
                 </div>
-                <button type="submit" style="display:block;width:100%;padding:0.75rem 1rem;font-size:1rem;font-weight:700;background:#c9a84c;color:#fff;border:none;border-radius:999px;cursor:pointer;letter-spacing:0.03em;">Sign In</button>
+                <input type="submit" value="Sign In"
+                    style="display:block !important;width:100% !important;min-height:46px;padding:0.75rem 1rem;font-size:1rem;font-weight:700;background:#c9a84c !important;color:#ffffff !important;border:1px solid rgba(201,168,76,0.8) !important;border-radius:999px;cursor:pointer;letter-spacing:0.03em;opacity:1 !important;visibility:visible !important;appearance:none;" />
             </form>
 
             <div class="text-center mt-4">
