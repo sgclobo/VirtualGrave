@@ -8,43 +8,62 @@ require_once '../includes/functions.php';
 
 $pageTitle = 'Dashboard';
 $db = getDB();
+$dbError = null;
 
 // Gather stats
-$stats = [];
-$queries = [
-    'total_members'       => "SELECT COUNT(*) FROM users WHERE status = 'approved'",
-    'pending_members'     => "SELECT COUNT(*) FROM users WHERE status = 'pending'",
-    'total_flowers'       => "SELECT COUNT(*) FROM deposited_flowers",
-    'total_candles'       => "SELECT COUNT(*) FROM lit_candles",
-    'total_prayers'       => "SELECT COUNT(*) FROM prayers",
-    'pending_testimonies' => "SELECT COUNT(*) FROM testimonies WHERE is_approved = 0",
-    'total_testimonies'   => "SELECT COUNT(*) FROM testimonies WHERE is_approved = 1",
-    'total_visits'        => "SELECT COUNT(*) FROM visit_log",
-    'today_visits'        => "SELECT COUNT(*) FROM visit_log WHERE DATE(visited_at) = CURDATE()",
-    'guestbook_pending'   => "SELECT COUNT(*) FROM guestbook WHERE is_approved = 0",
-];
-foreach ($queries as $key => $sql) {
-    $stmt = $db->query($sql);
-    $stats[$key] = (int)$stmt->fetchColumn();
+$stats = array_fill_keys([
+    'total_members','pending_members','total_flowers','total_candles',
+    'total_prayers','pending_testimonies','total_testimonies',
+    'total_visits','today_visits','guestbook_pending',
+], 0);
+$recentMembers = [];
+$recentPrayers = [];
+$visitData     = [];
+
+try {
+    $queries = [
+        'total_members'       => "SELECT COUNT(*) FROM users WHERE status = 'approved'",
+        'pending_members'     => "SELECT COUNT(*) FROM users WHERE status = 'pending'",
+        'total_flowers'       => "SELECT COUNT(*) FROM deposited_flowers",
+        'total_candles'       => "SELECT COUNT(*) FROM lit_candles",
+        'total_prayers'       => "SELECT COUNT(*) FROM prayers",
+        'pending_testimonies' => "SELECT COUNT(*) FROM testimonies WHERE is_approved = 0",
+        'total_testimonies'   => "SELECT COUNT(*) FROM testimonies WHERE is_approved = 1",
+        'total_visits'        => "SELECT COUNT(*) FROM visit_log",
+        'today_visits'        => "SELECT COUNT(*) FROM visit_log WHERE DATE(visited_at) = CURDATE()",
+        'guestbook_pending'   => "SELECT COUNT(*) FROM guestbook WHERE is_approved = 0",
+    ];
+    foreach ($queries as $key => $sql) {
+        $stats[$key] = (int)$db->query($sql)->fetchColumn();
+    }
+
+    // Recent members
+    $recentMembers = $db->query("SELECT full_name, username, country, status, registered_at AS created_at FROM users ORDER BY registered_at DESC LIMIT 5")->fetchAll();
+
+    // Recent prayers (moderation)
+    $recentPrayers = $db->query("SELECT p.title, p.category, p.created_at, u.full_name FROM prayers p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT 5")->fetchAll();
+
+    // Visits over last 7 days
+    $visitData = $db->query("
+        SELECT DATE(visited_at) as visit_date, COUNT(*) as cnt
+        FROM visit_log
+        WHERE visited_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+        GROUP BY DATE(visited_at)
+        ORDER BY visit_date ASC
+    ")->fetchAll();
+} catch (PDOException $e) {
+    error_log('Admin dashboard query error: ' . $e->getMessage());
+    $dbError = 'A database error occurred: ' . htmlspecialchars($e->getMessage());
 }
-
-// Recent members
-$recentMembers = $db->query("SELECT full_name, username, country, status, registered_at AS created_at FROM users ORDER BY registered_at DESC LIMIT 5")->fetchAll();
-
-// Recent prayers (moderation)
-$recentPrayers = $db->query("SELECT p.title, p.category, p.created_at, u.full_name FROM prayers p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT 5")->fetchAll();
-
-// Visits over last 7 days
-$visitData = $db->query("
-    SELECT DATE(visited_at) as visit_date, COUNT(*) as cnt
-    FROM visit_log
-    WHERE visited_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-    GROUP BY DATE(visited_at)
-    ORDER BY visit_date ASC
-")->fetchAll();
 
 include 'includes/header.php';
 ?>
+
+<?php if ($dbError): ?>
+<div class="alert alert-danger border-0 rounded-3 mb-4">
+    <strong>Dashboard Error:</strong> <?= $dbError ?>
+</div>
+<?php endif; ?>
 
 <!-- Stat Cards -->
 <div class="row g-3 mb-4">
