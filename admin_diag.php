@@ -1,28 +1,40 @@
 <?php
 /**
- * Admin diagnostics — check DB tables and PHP state.
- * DELETE this file immediately after use.
+ * Self-contained server diagnostic — no require_once needed.
+ * Upload this single file to the server root, visit it, then DELETE it.
  */
-require_once 'includes/config.php';
-
 header('Content-Type: text/plain; charset=utf-8');
 
-echo "=== SERVER DIAGNOSTICS ===\n\n";
-echo "PHP version: " . PHP_VERSION . "\n";
-echo "SAPI: " . PHP_SAPI . "\n";
-echo "Memory limit: " . ini_get('memory_limit') . "\n";
-echo "Max execution time: " . ini_get('max_execution_time') . "\n\n";
+// ── Inline credentials (same as includes/config.php) ──────────────────────
+$host    = 'localhost';
+$dbName  = 'u149904157_memorial_db';
+$dbUser  = 'u149904157_h3rcio';
+$dbPass  = 'H3rcio#53125';
+$charset = 'utf8mb4';
 
-// Check DB connection
+echo "=== SERVER DIAGNOSTICS ===\n";
+echo "PHP : " . PHP_VERSION . "\n";
+echo "SAPI: " . PHP_SAPI . "\n";
+echo "MEM : " . ini_get('memory_limit') . "\n\n";
+
+// ── DB connection ─────────────────────────────────────────────────────────
 try {
-    $db = getDB();
+    $dsn = "mysql:host={$host};dbname={$dbName};charset={$charset}";
+    $db  = new PDO($dsn, $dbUser, $dbPass, [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ]);
     echo "DB connection: OK\n\n";
-} catch (Exception $e) {
+} catch (PDOException $e) {
     echo "DB connection FAILED: " . $e->getMessage() . "\n";
     exit;
 }
 
-// Expected tables
+// ── PHP error log location ────────────────────────────────────────────────
+echo "error_log : " . (ini_get('error_log') ?: '(not set)') . "\n";
+echo "display_errors: " . ini_get('display_errors') . "\n\n";
+
+// ── Table check ──────────────────────────────────────────────────────────
 $tables = [
     'admin_users', 'users', 'flowers_catalog', 'candles_catalog',
     'deposited_flowers', 'lit_candles', 'prayers', 'testimonies',
@@ -32,34 +44,15 @@ $tables = [
 echo "=== TABLE CHECK ===\n";
 foreach ($tables as $t) {
     try {
-        $count = $db->query("SELECT COUNT(*) FROM `$t`")->fetchColumn();
-        echo "  ✓ $t ($count rows)\n";
+        $count = $db->query("SELECT COUNT(*) FROM `{$t}`")->fetchColumn();
+        echo "  OK  {$t} ({$count} rows)\n";
     } catch (Exception $e) {
-        echo "  ✗ $t — " . $e->getMessage() . "\n";
+        echo "  FAIL {$t} — " . $e->getMessage() . "\n";
     }
 }
 
-echo "\n=== COLUMN CHECKS ===\n";
-
-// Columns used specifically by admin/index.php
-$colChecks = [
-    'users'           => ['full_name', 'username', 'country', 'status', 'registered_at'],
-    'prayers'         => ['title', 'category', 'created_at', 'user_id', 'is_approved', 'visibility'],
-    'testimonies'     => ['is_approved'],
-    'guestbook'       => ['is_approved'],
-    'visit_log'       => ['visited_at', 'ip_address', 'page'],
-];
-
-foreach ($colChecks as $tbl => $cols) {
-    try {
-        $row = $db->query("SELECT " . implode(',', $cols) . " FROM `$tbl` LIMIT 1")->fetch();
-        echo "  ✓ $tbl columns OK\n";
-    } catch (Exception $e) {
-        echo "  ✗ $tbl — " . $e->getMessage() . "\n";
-    }
-}
-
-echo "\n=== ADMIN/INDEX QUERIES ===\n";
+// ── Exact queries from admin/index.php ───────────────────────────────────
+echo "\n=== ADMIN DASHBOARD QUERIES ===\n";
 $queries = [
     'total_members'       => "SELECT COUNT(*) FROM users WHERE status = 'approved'",
     'pending_members'     => "SELECT COUNT(*) FROM users WHERE status = 'pending'",
@@ -75,14 +68,13 @@ $queries = [
     'recent_prayers'      => "SELECT p.title, p.category, p.created_at, u.full_name FROM prayers p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT 5",
     'visit_chart'         => "SELECT DATE(visited_at) as visit_date, COUNT(*) as cnt FROM visit_log WHERE visited_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) GROUP BY DATE(visited_at) ORDER BY visit_date ASC",
 ];
-
 foreach ($queries as $key => $sql) {
     try {
         $db->query($sql)->fetchAll();
-        echo "  ✓ $key\n";
+        echo "  OK  {$key}\n";
     } catch (Exception $e) {
-        echo "  ✗ $key — " . $e->getMessage() . "\n";
+        echo "  FAIL {$key} — " . $e->getMessage() . "\n";
     }
 }
 
-echo "\nDone. DELETE this file now.\n";
+echo "\n!! DELETE THIS FILE FROM THE SERVER IMMEDIATELY AFTER USE !!\n";
