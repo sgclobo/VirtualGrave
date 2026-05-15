@@ -68,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Crimson+Pro:wght@300;400&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/main.css">
     <style>
     body {
         background: linear-gradient(135deg, #1a2a1a 0%, #0d1a2a 100%);
@@ -167,6 +166,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <input type="submit" value="Sign In"
                     style="display:block !important;width:100% !important;min-height:46px;padding:0.75rem 1rem;font-size:1rem;font-weight:700;background:#c9a84c !important;color:#ffffff !important;border:1px solid rgba(201,168,76,0.8) !important;border-radius:999px;cursor:pointer;letter-spacing:0.03em;opacity:1 !important;visibility:visible !important;appearance:none;" />
+                <button type="submit"
+                    style="display:block !important;width:100% !important;min-height:46px;margin-top:0.5rem;padding:0.75rem 1rem;font-size:0.95rem;font-weight:700;background:#e8924a !important;color:#ffffff !important;border:1px solid rgba(232,146,74,0.85) !important;border-radius:999px;cursor:pointer;letter-spacing:0.02em;opacity:1 !important;visibility:visible !important;appearance:none;">Sign In (Fallback)</button>
             </form>
 
             <div class="text-center mt-4">
