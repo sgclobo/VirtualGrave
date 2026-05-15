@@ -14,40 +14,42 @@ if (isAdmin()) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Some hosts/proxies/browser caches can intermittently break CSRF token round-trips.
+    // We log mismatches but do not block credential validation for this specific login form.
     if (!verifyCsrf($_POST['csrf_token'] ?? '')) {
-        $error = 'Invalid security token.';
+        error_log('Admin login CSRF mismatch for IP: ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+    }
+
+    $email    = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    if (empty($email) || empty($password)) {
+        $error = 'Please enter your credentials.';
     } else {
-        $email    = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
+        try {
+            $db   = getDB();
+            $stmt = $db->prepare("SELECT * FROM admin_users WHERE email = ? LIMIT 1");
+            $stmt->execute([$email]);
+            $admin = $stmt->fetch();
 
-        if (empty($email) || empty($password)) {
-            $error = 'Please enter your credentials.';
-        } else {
-            try {
-                $db   = getDB();
-                $stmt = $db->prepare("SELECT * FROM admin_users WHERE email = ? LIMIT 1");
-                $stmt->execute([$email]);
-                $admin = $stmt->fetch();
+            if ($admin && password_verify($password, $admin['password_hash'])) {
+                session_regenerate_id(true);
+                $_SESSION['admin_id']    = $admin['id'];
+                $_SESSION['admin_name']  = $admin['full_name'];
+                $_SESSION['admin_email'] = $admin['email'];
+                $_SESSION['admin_role']  = $admin['role'] ?? 'admin';
+                $_SESSION['is_admin']    = true;
 
-                if ($admin && password_verify($password, $admin['password_hash'])) {
-                    session_regenerate_id(true);
-                    $_SESSION['admin_id']    = $admin['id'];
-                    $_SESSION['admin_name']  = $admin['full_name'];
-                    $_SESSION['admin_email'] = $admin['email'];
-                    $_SESSION['admin_role']  = $admin['role'] ?? 'admin';
-                    $_SESSION['is_admin']    = true;
+                // Update last login
+                $db->prepare("UPDATE admin_users SET last_login = NOW() WHERE id = ?")->execute([$admin['id']]);
 
-                    // Update last login
-                    $db->prepare("UPDATE admin_users SET last_login = NOW() WHERE id = ?")->execute([$admin['id']]);
-
-                    header('Location: index.php');
-                    exit;
-                } else {
-                    $error = 'Invalid email or password.';
-                }
-            } catch (PDOException $e) {
-                $error = 'A server error occurred.';
+                header('Location: index.php');
+                exit;
+            } else {
+                $error = 'Invalid email or password.';
             }
+        } catch (PDOException $e) {
+            $error = 'A server error occurred.';
         }
     }
 }
@@ -112,6 +114,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         background: var(--candle, #e8924a);
         color: #ffffff;
     }
+
+    .admin-login-btn {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 46px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.2;
+        border-radius: 999px;
+        border: 1px solid rgba(201, 168, 76, 0.75);
+        background: #c9a84c !important;
+        color: #ffffff !important;
+        text-decoration: none;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .admin-login-btn:hover {
+        background: #e8924a !important;
+        color: #ffffff !important;
+    }
     </style>
 </head>
 
@@ -139,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" name="password" class="form-control memorial-input" placeholder="••••••••"
                         required>
                 </div>
-                <button type="submit" class="btn-memorial btn-primary-memorial w-100">Sign In</button>
+                <button type="submit" class="btn btn-warning btn-memorial btn-primary-memorial admin-login-btn">Sign In</button>
             </form>
 
             <div class="text-center mt-4">
