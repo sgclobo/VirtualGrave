@@ -5,6 +5,7 @@
 define('ADMIN_PAGE', true);
 require_once '../../includes/config.php';
 require_once '../../includes/functions.php';
+requireAdmin();
 
 $pageTitle = 'Flowers Catalog';
 $db = getDB();
@@ -16,18 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf($_POST['csrf_token'] ?? 
     if ($action === 'save') {
         $id      = (int)$_POST['flower_id'];
         $name    = trim($_POST['flower_name'] ?? '');
-        $emoji   = trim($_POST['flower_emoji'] ?? '🌸');
         $meaning = trim($_POST['symbolic_meaning'] ?? '');
         $color   = trim($_POST['color'] ?? '');
         $active  = isset($_POST['is_active']) ? 1 : 0;
 
         if ($id > 0) {
-            $db->prepare("UPDATE flowers_catalog SET flower_name=?,flower_emoji=?,symbolic_meaning=?,color=?,is_active=? WHERE id=?")
-               ->execute([$name,$emoji,$meaning,$color,$active,$id]);
+                $db->prepare("UPDATE flowers_catalog SET flower_name=?,symbolic_meaning=?,color=?,is_active=? WHERE id=?")
+                    ->execute([$name,$meaning,$color,$active,$id]);
             $msg = 'Flower updated.';
         } else {
-            $db->prepare("INSERT INTO flowers_catalog (flower_name,flower_emoji,symbolic_meaning,color,is_active) VALUES (?,?,?,?,?)")
-               ->execute([$name,$emoji,$meaning,$color,$active]);
+                $db->prepare("INSERT INTO flowers_catalog (flower_name,symbolic_meaning,color,is_active) VALUES (?,?,?,?)")
+                    ->execute([$name,$meaning,$color,$active]);
             $msg = 'Flower added.';
         }
     } elseif ($action === 'delete') {
@@ -67,13 +67,7 @@ include '../includes/header.php';
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" name="flower_id" value="<?= $editFlower['id'] ?? 0 ?>">
                 <div class="row g-2 mb-3">
-                    <div class="col-4">
-                        <label class="form-label small">Emoji</label>
-                        <input type="text" name="flower_emoji" class="form-control form-control-sm text-center"
-                               style="font-size:1.3rem;" maxlength="10"
-                               value="<?= htmlspecialchars($editFlower['flower_emoji'] ?? '🌸') ?>">
-                    </div>
-                    <div class="col-8">
+                    <div class="col-12">
                         <label class="form-label small">Flower Name <span class="text-danger">*</span></label>
                         <input type="text" name="flower_name" class="form-control form-control-sm" required maxlength="100"
                                value="<?= htmlspecialchars($editFlower['flower_name'] ?? '') ?>">
@@ -117,7 +111,7 @@ include '../includes/header.php';
                     <?php foreach ($flowers as $f): ?>
                     <tr>
                         <td>
-                            <span style="font-size:1.3rem;"><?= htmlspecialchars($f['flower_emoji']) ?></span>
+                            <span style="font-size:1.3rem;">🌸</span>
                             <span class="fw-semibold small ms-1"><?= htmlspecialchars($f['flower_name']) ?></span>
                         </td>
                         <td class="small text-muted"><?= htmlspecialchars(mb_substr($f['symbolic_meaning']??'',0,50)) ?></td>

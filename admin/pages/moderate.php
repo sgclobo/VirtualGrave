@@ -5,6 +5,7 @@
 define('ADMIN_PAGE', true);
 require_once '../../includes/config.php';
 require_once '../../includes/functions.php';
+requireAdmin();
 
 $pageTitle = 'Moderate Content';
 $db = getDB();
@@ -21,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $itemId   = (int)($_POST['item_id'] ?? 0);
         $itemType = $_POST['item_type'] ?? '';
 
-        if ($itemId > 0 && in_array($itemType, ['testimonies','prayers','guestbook'])) {
+        if ($itemId > 0 && in_array($itemType, ['testimonies','prayers','guestbook','deposited_flowers'], true)) {
             if ($action === 'approve' && in_array($itemType, ['testimonies','guestbook'])) {
                 $db->prepare("UPDATE $itemType SET is_approved = 1 WHERE id = ?")->execute([$itemId]);
                 $msg = 'Item approved.';
@@ -220,11 +221,11 @@ $entries = $db->query("SELECT * FROM guestbook ORDER BY is_approved ASC, created
 <!-- ===== FLOWERS ===== -->
 <?php
 $flowers = $db->query("
-    SELECT df.*, fc.flower_name, fc.flower_emoji, u.full_name
+    SELECT df.*, fc.flower_name, u.full_name
     FROM deposited_flowers df
     JOIN flowers_catalog fc ON df.flower_id = fc.id
     JOIN users u ON df.user_id = u.id
-    ORDER BY df.deposited_at DESC LIMIT 50
+    ORDER BY df.created_at DESC LIMIT 50
 ")->fetchAll();
 ?>
 <div class="admin-card">
@@ -237,10 +238,10 @@ $flowers = $db->query("
             <tbody>
             <?php foreach ($flowers as $f): ?>
             <tr>
-                <td class="small"><?= $f['flower_emoji'] ?? '🌹' ?> <?= htmlspecialchars($f['flower_name']) ?></td>
+                <td class="small">🌹 <?= htmlspecialchars($f['flower_name']) ?></td>
                 <td class="small"><?= htmlspecialchars($f['full_name']) ?></td>
                 <td class="small text-muted"><?= htmlspecialchars($f['message'] ?? '—') ?></td>
-                <td class="small text-muted"><?= date('M j, Y', strtotime($f['deposited_at'])) ?></td>
+                <td class="small text-muted"><?= date('M j, Y', strtotime($f['created_at'])) ?></td>
                 <td>
                     <form method="POST" onsubmit="return confirm('Delete?');">
                         <?= csrfField() ?>

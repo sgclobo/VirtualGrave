@@ -5,6 +5,19 @@
 
 require_once __DIR__ . '/config.php';
 
+// mbstring is not always enabled on shared hosting; provide lightweight fallbacks.
+if (!function_exists('mb_substr')) {
+    function mb_substr(string $string, int $start, ?int $length = null, ?string $encoding = null): string {
+        return $length === null ? substr($string, $start) : substr($string, $start, $length);
+    }
+}
+
+if (!function_exists('mb_strlen')) {
+    function mb_strlen(string $string, ?string $encoding = null): int {
+        return strlen($string);
+    }
+}
+
 // ─── HTTP Security Headers ───────────────────────────────
 if (!headers_sent()) {
     header('X-Content-Type-Options: nosniff');
