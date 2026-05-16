@@ -5,6 +5,13 @@
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
 
+// Prevent intermediary/browser cache from serving stale CSRF tokens.
+if (!headers_sent()) {
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+}
+
 // Already logged in as admin
 if (isAdmin()) {
     header('Location: index.php');
@@ -68,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Crimson+Pro:wght@300;400&display=swap"
         rel="stylesheet">
-        <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
     <style>
     body {
         background: linear-gradient(135deg, #1a2a1a 0%, #0d1a2a 100%);
@@ -165,8 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" name="password" class="form-control memorial-input" placeholder="••••••••"
                         required>
                 </div>
-                <button type="submit" class="btn w-100 mt-2"
-                    class="btn btn-memorial btn-primary-memorial w-100">
+                <button type="submit" class="btn btn-memorial btn-primary-memorial admin-login-btn w-100 mt-2">
                     Sign In →
                 </button>
             </form>
