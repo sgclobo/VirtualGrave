@@ -164,10 +164,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" name="password" class="form-control memorial-input" placeholder="••••••••"
                         required>
                 </div>
-                <input type="submit" value="Sign In"
-                    style="display:block !important;width:100% !important;min-height:46px;padding:0.75rem 1rem;font-size:1rem;font-weight:700;background:#c9a84c !important;color:#ffffff !important;border:1px solid rgba(201,168,76,0.8) !important;border-radius:999px;cursor:pointer;letter-spacing:0.03em;opacity:1 !important;visibility:visible !important;appearance:none;" />
-                <button type="submit"
-                    style="display:block !important;width:100% !important;min-height:46px;margin-top:0.5rem;padding:0.75rem 1rem;font-size:0.95rem;font-weight:700;background:#e8924a !important;color:#ffffff !important;border:1px solid rgba(232,146,74,0.85) !important;border-radius:999px;cursor:pointer;letter-spacing:0.02em;opacity:1 !important;visibility:visible !important;appearance:none;">Sign In (Fallback)</button>
+                <button type="submit" class="btn w-100 mt-2"
+                    style="background:#c9a84c;color:#fff;border:none;padding:0.75rem 1rem;border-radius:999px;font-size:1rem;font-weight:700;letter-spacing:0.03em;">
+                    Sign In &rarr;
+                </button>
             </form>
 
             <div class="text-center mt-4">
