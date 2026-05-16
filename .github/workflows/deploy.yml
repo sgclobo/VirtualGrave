@@ -20,5 +20,5 @@ jobs:
           username: "u149904157"
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          server-dir: "public_html/"
+          server-dir: "domains/herciocampos.com/public_html/"
           state-name: ".ftp-deploy-sync-state-v2.json"
