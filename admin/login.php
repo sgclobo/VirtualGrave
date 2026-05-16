@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Crimson+Pro:wght@300;400&display=swap"
         rel="stylesheet">
+        <link rel="stylesheet" href="../assets/css/main.css">
     <style>
     body {
         background: linear-gradient(135deg, #1a2a1a 0%, #0d1a2a 100%);
@@ -165,8 +166,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         required>
                 </div>
                 <button type="submit" class="btn w-100 mt-2"
-                    style="background:#c9a84c;color:#fff;border:none;padding:0.75rem 1rem;border-radius:999px;font-size:1rem;font-weight:700;letter-spacing:0.03em;">
-                    Sign In &rarr;
+                    class="btn btn-memorial btn-primary-memorial w-100">
+                    Sign In →
                 </button>
             </form>
 
