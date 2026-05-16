@@ -13,7 +13,18 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      - name: 🚀 Sync files to Hostinger
+      - name: 🚀 Sync files to Hostinger (public_html)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: "145.223.108.148"
+          username: "u149904157"
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          server-dir: "public_html/"
+          state-name: ".ftp-deploy-sync-state-public-html.json"
+
+      - name: 🚀 Sync files to Hostinger (domains/herciocampos.com/public_html)
+        continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: "145.223.108.148"
@@ -21,4 +32,15 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           server-dir: "domains/herciocampos.com/public_html/"
-          state-name: ".ftp-deploy-sync-state-v2.json"
+          state-name: ".ftp-deploy-sync-state-domain-public-html.json"
+
+      - name: 🚀 Sync files to Hostinger (herciocampos.com/public_html)
+        continue-on-error: true
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: "145.223.108.148"
+          username: "u149904157"
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          server-dir: "herciocampos.com/public_html/"
+          state-name: ".ftp-deploy-sync-state-alt-domain-public-html.json"
