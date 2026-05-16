@@ -1,6 +1,7 @@
 <?php
 /**
  * Admin Dashboard
+ * @version 1.1
  */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
